@@ -1,11 +1,12 @@
-<div data-id="{{id}}" data-name="{{name}}" class="col-6">
+<div  class="activity_creator col-6">
     <div class="card {{#starred}}starred{{/starred}}" style="width: 100%">
         <div class="card-body media">
-            <a href="{{{link}}}">{{{icon}}}</a>
+            <a href="#">{{{icon}}}</a>
             <div class="media-body">
                 <!--TODO - localise aria-label -->
                 <i role="button" aria-label="Toggle starred for {{label}}" class="fa {{#starred}}fa-star{{/starred}}{{^starred}}fa-star-o{{/starred}} pull-right toggle-favourite" data-id="{{id}}"></i>
-                <a href="{{{link}}}"><h5 class="card-title">{{label}}</h5></a>
+                <a class="activity_creator" data-courseid="{{courseid}}" data-section="{{section}}" data-id="{{id}}" data-name="{{name}}"
+                   href="#"><h5 class="card-title">{{label}}</h5></a>
                 <div class="card-text help-text">
                     <div class="short-help-text">{{#shortentext}}60, {{{help}}} {{/shortentext}}</div>
                     <div class="full-help-text">{{{help}}}</div>

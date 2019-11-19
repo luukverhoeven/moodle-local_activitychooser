@@ -34,7 +34,7 @@ class get_activities {
 
         foreach ($starred as $star) {
             foreach ($starredmodules as $module) {
-                $mod = $this->get_module_information($module, $sectionnum);
+                $mod = $this->get_module_information($module, $sectionnum , $courseid);
                 if ($star->activityid == $mod['id']) {
                     $retval['starred'][] = $mod;
                 }
@@ -55,7 +55,7 @@ class get_activities {
 
         $tmp = [];
         foreach ($modules as $module) {
-            $mod = $this->get_module_information($module, $sectionnum);
+            $mod = $this->get_module_information($module, $sectionnum , $courseid);
             $rec = false;
             foreach ($recommended as $value) {
                 if ($value == $mod['id']) {
@@ -83,11 +83,22 @@ class get_activities {
         return $retval;
     }
 
-    private function get_module_information($module, $sectionnum) {
+    /**
+     * @param $module
+     * @param $sectionnum
+     * @param $courseid
+     *
+     * @return array
+     * @throws \coding_exception
+     * @throws \dml_exception
+     */
+    private function get_module_information($module, $sectionnum , $courseid) {
         global $DB, $USER;
         $activityid = $DB->get_field('modules', 'id', ['name' => $module->name]);
         return [
                 'id'      => $activityid,
+                'courseid' => $courseid,
+                'section' => $sectionnum,
                 'name'    => $module->name,
                 'label'   => get_string("modulename", "$module->name"),
                 'icon'    => $module->icon,

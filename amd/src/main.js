@@ -5,12 +5,35 @@ define(["jquery", "core/str", "core/modal_factory", "core/templates", "core/ajax
             var mainModal;
 
             /**
+             * Get the minimal module form for the popup
+             */
+            var getModuleForm = function(data) {
+                console.log('getModuleForm' , data);
+
+                return Ajax.call([
+                    {
+                        methodname: "local_activitychooser_render_form",
+                        args: {
+                            "name": data.name,
+                            "courseid": data.courseid,
+                            "section": data.section
+                        }
+                    }
+                ])[0].then(function(data) {
+                    mainModal.setBody(data.mod_form);
+                });
+            };
+
+            /**
              * Add or remove a specific moduleId from favourited items.
              * @param moduleId
              */
             var moduleToggleFavourited = function(moduleId) {
                 return Ajax.call([
-                    {methodname: "local_activitychooser_toggle_starred", args:{"activityid": moduleId}}
+                    {
+                        methodname: "local_activitychooser_toggle_starred",
+                        args: {"activityid": moduleId}
+                    }
                 ])[0]
                     .then(function() {
                         return getTemplateContext(currentSection);
@@ -28,7 +51,10 @@ define(["jquery", "core/str", "core/modal_factory", "core/templates", "core/ajax
                 return Ajax.call([
                     {
                         methodname: "local_activitychooser_get_activites",
-                        args:{"sectionnum": sectionNum, "course": course}
+                        args: {
+                            "sectionnum": sectionNum,
+                            "course": course
+                        }
                     }
                 ])[0].then(function(data) {
                     var convertItemsToRows = function(items, maxCells) {
@@ -102,6 +128,16 @@ define(["jquery", "core/str", "core/modal_factory", "core/templates", "core/ajax
                 var id = ($(this).data('id'));
                 $(this).addClass('spinning');
                 moduleToggleFavourited(id);
+            });
+
+            $("body").on("click", ".activitychooser-modal-body a.activity_creator", function(e) {
+                e.preventDefault();
+
+                getModuleForm({
+                    courseid : $(this).data('courseid'),
+                    section : $(this).data('section'),
+                    name : $(this).data('name'),
+                });
             });
 
             $("body").on("click", ".activitychooser-modal-body .row .help-text", function() {
