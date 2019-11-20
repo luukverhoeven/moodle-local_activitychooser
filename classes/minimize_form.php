@@ -26,9 +26,6 @@
 
 namespace local_activitychooser;
 
-use block_voucher\pdf\element_factory;
-use moodle_url;
-
 global $CFG;
 require_once($CFG->libdir . '/formslib.php');
 
@@ -65,11 +62,13 @@ class minimize_form {
      * @throws \dml_exception
      * @throws \moodle_exception
      */
-    public function get_form() {
-        global $CFG, $DB, $PAGE;
+    public function render() {
+        global $CFG, $DB;
 
         $course = $DB->get_record('course', ['id' => $this->courseid], '*', MUST_EXIST);
-        require_login($course);
+        //  require_login($course);
+
+        // @TODO add some validation if it's allowed to request the form.
 
         require_once($CFG->dirroot . '/course/modlib.php');
         list($module, $context, $cw, $cm, $data) = prepare_new_moduleinfo_data($course, $this->modname, $this->section);
@@ -77,21 +76,17 @@ class minimize_form {
         $modmoodleform = "$CFG->dirroot/mod/$module->name/mod_form.php";
         if (!file_exists($modmoodleform)) {
             // Show error.
-            print_error('error:missing_form' , 'local_activitychooser');
+            print_error('error:missing_form', 'local_activitychooser');
         }
 
         require_once($modmoodleform);
-
-        $url = new moodle_url('/course/modedit.php');
-        $PAGE->set_url($url);
-        $PAGE->set_context($context);
 
         $data->return = 0;
         $data->sr = $this->section;
         $data->add = $this->modname;
 
         /** @var \moodleform_mod $mformclassname */
-        $mformclassname = 'mod_'.$module->name.'_mod_form';
+        $mformclassname = 'mod_' . $module->name . '_mod_form';
         $mform = new $mformclassname($data, $cw->section, $cm, $course);
         $mform->set_data($data);
 
