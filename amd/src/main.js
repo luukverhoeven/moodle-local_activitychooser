@@ -11,6 +11,7 @@ define([
             init: function() {
                 var currentSection = 0;
                 var mainModal;
+                var contextId = 70;
 
                 /**
                  * Get the minimal module form for the popup
@@ -20,7 +21,7 @@ define([
                     return Fragment.loadFragment(
                         'local_activitychooser',
                         'minimal_form',
-                        70,
+                        contextId,
                         {
                             "name": data.name,
                             "courseid": data.courseid,
@@ -29,11 +30,26 @@ define([
                     )
                         .then(function(html, js) {
                             var form = $(html);
-                            form.find('').hide();
+                            form.find('.collapsible').each(function(i) {
+                                if (i === 0) {
+                                    return;
+                                }
+                                $(this).hide();
+                            });
                             Template.replaceNodeContents($('.modal-body'), form, js);
                             return;
                         }.bind(this))
                         .then(function() {
+
+                            // Submit on enter.
+                            $(document).on('keypress', function(e) {
+                                if (e.which !== 13) {
+                                    return;
+                                }
+
+                                $('#mform1').submit();
+                            });
+
                             // Make sure the form change checker is disabled otherwise it'll
                             // stop the user from navigating away from the page once the modal
                             // is hidden.

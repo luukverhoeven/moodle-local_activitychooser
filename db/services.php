@@ -22,13 +22,6 @@ $functions = [
         'type' => 'write',
         'ajax' => true,
     ],
-    'local_activitychooser_render_form' => [
-        'classname' => 'local_activitychooser\\ajax\\get_rendered_form',
-        'methodname' => 'service',
-        'description' => 'Render a form ',
-        'type' => 'read',
-        'ajax' => true,
-    ],
 ];
 
 // During the plugin installation/upgrade, Moodle installs these services as pre-build services.
